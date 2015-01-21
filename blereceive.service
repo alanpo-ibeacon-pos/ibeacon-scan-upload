@@ -1,0 +1,15 @@
+# put it in /etc/systemd/system/multi-user.target.wants
+
+[Unit]
+Description=Bluetooth Low Energy Receiver
+Requires=python2
+
+[Service]
+Type=dbus
+BusName=net.connman
+Restart=on-failure
+ExecStart=/usr/bin/connmand -n
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
