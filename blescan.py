@@ -211,7 +211,9 @@ class BleScanResult(object):
         self.minor = minor
         self.mac = mac
         self.u_txpower = u_txpower
+        print(type(u_txpower))
         self.rssi = rssi
+        print(type(rssi))
 
     def __str__(self):
         return self.mac + ", " + self.uuid + ", " + str(self.major) + ", " + str(self.minor) + ", " + str(self.u_txpower) + ", " + str(self.rssi)
