@@ -214,4 +214,4 @@ class BleScanResult(object):
         self.rssi = rssi
 
     def __str__(self):
-        return self.mac + ", " + self.uuid + ", " + self.major + ", " + self.minor + ", " + self.u_txpower + ", " + self.rssi
+        return self.mac + ", " + self.uuid + ", " + str(self.major) + ", " + str(self.minor) + ", " + str(self.u_txpower) + ", " + str(self.rssi)
