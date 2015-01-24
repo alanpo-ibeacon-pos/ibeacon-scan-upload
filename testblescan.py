@@ -42,5 +42,5 @@ while True:
     for beacon in returnedList:
         print(beacon)
         if not sent:
-            reportToHttp("http://hkgsherlock.no-ip.org/", cBdaddr, beacon, True)
+            reportToHttp("http://hkgsherlock.no-ip.org/beacons/report.php", cBdaddr, beacon, True)
             sent = True
