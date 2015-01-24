@@ -15,9 +15,16 @@ def reportToHttp(url, devBdaddr, bleScanResult, usePOST=False):
                      "mac": bleScanResult.mac,
                      "txpower": bleScanResult.u_txpower,
                      "rssi": bleScanResult.rssi}
-    method = 'get'
-    if (usePOST): method = 'post'
-    r = requests.request(method, url, params=beaconContent)
+    method = ''
+    data = None
+    params = None
+    if usePOST:
+        method = 'post'
+        data = beaconContent
+    else:
+        method = 'get'
+        params = beaconContent
+    r = requests.request(method, url, data=data, params=params)
     # return r.status_code == 200 & r.content == "1"
 
 dev_id = 0
