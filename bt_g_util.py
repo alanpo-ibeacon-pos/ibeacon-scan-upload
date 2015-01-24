@@ -19,7 +19,7 @@ def read_local_bdaddr(hci_sock):
     status, raw_bdaddr = struct.unpack("xxxxxxB6s", pkt)
     assert status == 0
 
-    t = [("%X" % ord(b)).zfill(2) for b in raw_bdaddr]
+    t = [("%X" % ord(b)).lower().zfill(2) for b in raw_bdaddr]
     t.reverse()
     bdaddr = ":".join(t)
 
