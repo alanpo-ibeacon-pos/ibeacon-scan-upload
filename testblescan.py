@@ -43,3 +43,4 @@ while True:
         print(beacon)
         if not sent:
             reportToHttp("http://hkgsherlock.no-ip.org/", cBdaddr, beacon, True)
+            sent = True
