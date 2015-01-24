@@ -1,31 +1,13 @@
 # test BLE Scanning software
 # jcs 6/8/2014
 
-import blescan
 import sys
-import requests
+
+import blescan
 import bluetooth._bluetooth as bluez
 import bt_g_util
+import tracesReporting as report
 
-def reportToHttp(url, devBdaddr, bleScanResult, usePOST=False):
-    beaconContent = {"selfMac": devBdaddr,
-                     "uuid": bleScanResult.uuid,
-                     "major": bleScanResult.major,
-                     "minor": bleScanResult.minor,
-                     "mac": bleScanResult.mac,
-                     "txpower": bleScanResult.u_txpower,
-                     "rssi": bleScanResult.rssi}
-    method = ''
-    data = None
-    params = None
-    if usePOST:
-        method = 'post'
-        data = beaconContent
-    else:
-        method = 'get'
-        params = beaconContent
-    r = requests.request(method, url, data=data, params=params)
-    # return r.status_code == 200 & r.content == "1"
 
 dev_id = 0
 # dev_id = hci_devid( "01:23:45:67:89:AB" );
@@ -49,5 +31,5 @@ while True:
     for beacon in returnedList:
         print(beacon)
         if not sent:
-            reportToHttp("http://hkgsherlock.no-ip.org/beacons/report.php", cBdaddr, beacon, True)
+            report.in_mysql(cBdaddr, beacon)
             sent = True
