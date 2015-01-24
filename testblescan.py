@@ -17,7 +17,7 @@ def reportToHttp(url, devBdaddr, bleScanResult, usePOST=False):
                      "rssi": bleScanResult.rssi}
     method = 'get'
     if (usePOST): method = 'post'
-    r = requests.request(method, params=beaconContent)
+    r = requests.request(method, url, params=beaconContent)
     # return r.status_code == 200 & r.content == "1"
 
 dev_id = 0
