@@ -12,6 +12,8 @@ mysqlDb = "ibeacon-traces"
 mysqlTable = "traces"
 
 
+__mysqlPrepared = False
+
 def in_http(devBdaddr, bleScanResult):
     beaconContent = {"selfMac": devBdaddr,
                      "uuid": bleScanResult.uuid,
@@ -34,7 +36,7 @@ def in_http(devBdaddr, bleScanResult):
 
 
 def in_mysql(devBdaddr, bleScanResult):
-    db = MySQLdb.connect(mysqlHost + str(mysqlPort), mysqlUser, mysqlPass, mysqlDb)
+    db = MySQLdb.connect(mysqlHost + ":" + str(mysqlPort), mysqlUser, mysqlPass, mysqlDb)
     cursor = db.cursor()
     sql = "INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
            VALUES (%x, 0x%s, %d, %d, %x, %d, %d)" % \
