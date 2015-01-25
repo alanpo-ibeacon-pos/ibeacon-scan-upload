@@ -50,7 +50,9 @@ def in_mysql(devBdaddr, bleScanResult):
     try:
         cursor.execute(sql)
         db.commit()
-    except:
+    except Exception as e:
+        print(sql)
+        print(e)
         db.rollback()
     finally:
         db.close()
