@@ -24,13 +24,10 @@ print(cBdaddr)
 blescan.hci_le_set_scan_parameters(sock)
 blescan.hci_enable_le_scan(sock)
 
-sent = False
 while True:
     returnedList = blescan.parse_events(sock, 1)
     print("----------")
     for beacon in returnedList:
         print(beacon)
-        # if not sent:
-        #     report.in_mysql(cBdaddr, beacon)
-        #     sent = True
-        report.in_http(cBdaddr, beacon)
+        # report.in_http(cBdaddr, beacon)
+        report.in_mysql(cBdaddr, beacon)
