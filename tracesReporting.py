@@ -40,11 +40,11 @@ def in_mysql(devBdaddr, bleScanResult):
     cursor = db.cursor()
     sql = "INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
            VALUES (%x, 0x%s, %d, %d, %x, %d, %d)" % \
-                                        (devBdaddr.replace(":", ""),
+                                        (int('0x' + devBdaddr.replace(":", "")),
                                          bleScanResult.uuid,  # .replace("-", "")
                                          bleScanResult.major,
                                          bleScanResult.minor,
-                                         bleScanResult.mac.replace(":", ""),
+                                         int('0x' + bleScanResult.mac.replace(":", "")),
                                          bleScanResult.u_txpower,
                                          bleScanResult.rssi)
     try:
