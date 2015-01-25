@@ -8,7 +8,7 @@ mysqlHost = "hkgsherlock.no-ip.org"
 mysqlPort = 3306
 mysqlUser = "ibeacon"
 mysqlPass = "1Beac0n"
-mysqlDb = "ibeacon-traces"
+mysqlDb = "ibeacon_traces"
 mysqlTable = "traces"
 
 
@@ -36,7 +36,7 @@ def in_http(devBdaddr, bleScanResult):
 
 
 def in_mysql(devBdaddr, bleScanResult):
-    db = MySQLdb.connect(mysqlHost + ":" + str(mysqlPort), mysqlUser, mysqlPass, mysqlDb)
+    db = MySQLdb.connect(host=mysqlHost, port=mysqlPort, user=mysqlUser, passwd=mysqlPass, db=mysqlDb)
     cursor = db.cursor()
     sql = "INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
            VALUES (%x, 0x%s, %d, %d, %x, %d, %d)" % \
