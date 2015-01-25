@@ -39,7 +39,7 @@ def in_mysql(devBdaddr, bleScanResult):
     db = MySQLdb.connect(host=mysqlHost, port=mysqlPort, user=mysqlUser, passwd=mysqlPass, db=mysqlDb)
     cursor = db.cursor()
     sql = "INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
-           VALUES (%x, 0x%s, %d, %d, %x, %d, %d)" % \
+           VALUES (%d, 0x%s, %d, %d, %d, %d, %d)" % \
                                         (int(devBdaddr.replace(":", ""), 16),
                                          bleScanResult.uuid,  # .replace("-", "")
                                          bleScanResult.major,
