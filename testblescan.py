@@ -30,6 +30,7 @@ while True:
     print("----------")
     for beacon in returnedList:
         print(beacon)
-        if not sent:
-            report.in_mysql(cBdaddr, beacon)
-            sent = True
+        # if not sent:
+        #     report.in_mysql(cBdaddr, beacon)
+        #     sent = True
+        report.in_http(cBdaddr, beacon)
