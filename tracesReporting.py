@@ -19,7 +19,9 @@ def in_http(devBdaddr, bleScanResult):
     __in_http(devBdaddr, bleScanResult, httpReportUrl)
 
 def in_http_attend(devBdaddr, bleScanResult):
-    __in_http(devBdaddr, bleScanResult, httpAttendUrl)
+    result = __in_http(devBdaddr, bleScanResult, httpAttendUrl)
+    if (result.status_code == 500):
+        print(result.content)
 
 def __in_http(devBdaddr, bleScanResult, url):
     beaconContent = {"selfMac": devBdaddr,
@@ -38,8 +40,7 @@ def __in_http(devBdaddr, bleScanResult, url):
     else:
         method = 'get'
         params = beaconContent
-    r = requests.request(method, url, data=data, params=params)
-    # return r.status_code == 200 & r.content == "1"
+    return requests.request(method, url, data=data, params=params)
 
 def in_mysql(devBdaddr, bleScanResult):
     db = MySQLdb.connect(host=mysqlHost, port=mysqlPort, user=mysqlUser, passwd=mysqlPass, db=mysqlDb)
