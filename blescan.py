@@ -15,10 +15,12 @@ DEBUG = False
 # NOTE: Python's struct.pack() will add padding bytes unless you make the endianness explicit. Little endian
 # should be used for BLE. Always start a struct.pack() format string with "<"
 
-import os
 import sys
 import struct
+
 import bluetooth._bluetooth as bluez
+import distcalc
+
 
 LE_META_EVENT = 0x3e
 LE_PUBLIC_ADDRESS = 0x00
@@ -202,7 +204,7 @@ class BleScanResult(object):
     major = 0
     minor = 0
     mac = ""
-    u_txpower = 0
+    txpower = 0
     rssi = 0
 
     def __init__(self, uuid, major, minor, mac, u_txpower, rssi):
@@ -210,8 +212,11 @@ class BleScanResult(object):
         self.major = major
         self.minor = minor
         self.mac = mac
-        self.u_txpower = u_txpower
+        self.txpower = u_txpower
         self.rssi = rssi
 
     def __str__(self):
-        return self.mac + ", " + self.uuid + ", " + str(self.major) + ", " + str(self.minor) + ", " + str(self.u_txpower) + ", " + str(self.rssi)
+        return self.mac + ", " + self.uuid + ", " + str(self.major) + ", " + str(self.minor) + ", " + str(self.txpower) + ", " + str(self.rssi)
+
+    def getDist(self):
+        return distcalc.calDistance(self.txpower, self.rssi)

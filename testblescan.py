@@ -7,7 +7,6 @@ import blescan
 import bluetooth._bluetooth as bluez
 import bt_g_util
 import tracesReporting as report
-import distcalc
 
 trace = False
 attend = False
@@ -46,7 +45,7 @@ while True:
     print("----------")
     for beacon in returnedList:
         print(beacon)
-        print("Distance: %f" % distcalc.calDistance(beacon.txpower, beacon.rssi))
+        print("Distance: %f" % beacon.getDist())
         if attend:
             report.in_http_attend(cBdaddr, beacon)
         if trace:
