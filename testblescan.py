@@ -7,7 +7,9 @@ import blescan
 import bluetooth._bluetooth as bluez
 import bt_g_util
 import tracesReporting as report
+import distcalc
 
+trace = False
 attend = False
 useMySql = False
 
@@ -20,7 +22,9 @@ for argn in sys.argv:
     if argn == 'attend':
         attend = True
     elif argn == 'mysql':
-        useMySql = False
+        useMySql = True
+    elif argn == 'trace':
+        trace = True
 
 dev_id = 0
 # dev_id = hci_devid( "01:23:45:67:89:AB" );
@@ -42,9 +46,10 @@ while True:
     print("----------")
     for beacon in returnedList:
         print(beacon)
+        print("Distance: %f" % distcalc.calDistance(beacon.txpower, beacon.rssi))
         if attend:
             report.in_http_attend(cBdaddr, beacon)
-        else:
+        if trace:
             if useMySql:
                 report.in_mysql(cBdaddr, beacon)
             else:
