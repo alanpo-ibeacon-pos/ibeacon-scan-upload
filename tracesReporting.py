@@ -16,7 +16,7 @@ mysqlTable = "traces"
 __mysqlPrepared = False
 
 def in_http(devBdaddr, bleScanResult):
-    __in_http(devBdaddr, bleScanResult, httpReportUrl)
+    return __in_http(devBdaddr, bleScanResult, httpReportUrl)
 
 def in_http_attend(devBdaddr, bleScanResult):
     result = __in_http(devBdaddr, bleScanResult, httpAttendUrl)
