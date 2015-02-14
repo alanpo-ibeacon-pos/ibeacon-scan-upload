@@ -55,4 +55,4 @@ while True:
             if useMySql:
                 report.in_mysql(cBdaddr, beacon)
             else:
-                report.in_http(cBdaddr, beacon)
+                print(report.in_http(cBdaddr, beacon).status_code)
