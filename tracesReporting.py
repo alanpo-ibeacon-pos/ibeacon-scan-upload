@@ -1,8 +1,8 @@
 import requests
 import MySQLdb
 
-httpReportUrl = "http://hkgsherlock.no-ip.org/beacons/report.php"
-httpAttendUrl = "http://hkgsherlock.no-ip.org/beacons/attend.php"
+httpReportUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/report.php"
+httpAttendUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/attend.php"
 httpUsePost = True
 
 mysqlHost = "hkgsherlock.no-ip.org"
