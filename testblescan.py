@@ -12,6 +12,9 @@ trace = False
 attend = False
 useMySql = False
 
+if len(sys.argv) <= 1:
+    print("args: [--attend] [--trace [--mysql]]")
+
 for argn in sys.argv:
     if not argn.startswith('--'):
         continue
@@ -44,10 +47,10 @@ while True:
     returnedList = blescan.parse_events(sock, 1)
     print("----------")
     for beacon in returnedList:
+#        print(str(beacon.txpower) + ", " + str(beacon.rssi));
         print(beacon)
-        print("Distance: %f" % beacon.getDist())
         if attend:
-            report.in_http_attend(cBdaddr, beacon)
+            print(report.in_http_attend(cBdaddr, beacon).content)
         if trace:
             if useMySql:
                 report.in_mysql(cBdaddr, beacon)

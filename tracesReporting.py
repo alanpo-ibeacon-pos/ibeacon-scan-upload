@@ -22,6 +22,7 @@ def in_http_attend(devBdaddr, bleScanResult):
     result = __in_http(devBdaddr, bleScanResult, httpAttendUrl)
     if (result.status_code == 500):
         print(result.content)
+    return result
 
 def __in_http(devBdaddr, bleScanResult, url):
     beaconContent = {"selfMac": devBdaddr,
@@ -29,7 +30,7 @@ def __in_http(devBdaddr, bleScanResult, url):
                      "major": bleScanResult.major,
                      "minor": bleScanResult.minor,
                      "mac": bleScanResult.mac,
-                     "txpower": bleScanResult.u_txpower,
+                     "txpower": bleScanResult.txpower,
                      "rssi": bleScanResult.rssi}
     method = ''
     data = None
@@ -52,7 +53,7 @@ def in_mysql(devBdaddr, bleScanResult):
                                          bleScanResult.major,
                                          bleScanResult.minor,
                                          int(bleScanResult.mac.replace(":", ""), 16),
-                                         bleScanResult.u_txpower,
+                                         bleScanResult.txpower,
                                          bleScanResult.rssi)
     try:
         cursor.execute(sql)
