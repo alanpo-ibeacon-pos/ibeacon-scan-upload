@@ -11,9 +11,10 @@ import tracesReporting as report
 trace = False
 attend = False
 useMySql = False
+traceToLocal = False
 
 if len(sys.argv) <= 1:
-    print("args: [--attend] [--trace [--mysql]]")
+    print("args: [--attend] [--trace [--mysql]] [--tracelocal]")
 
 for argn in sys.argv:
     if not argn.startswith('--'):
@@ -27,13 +28,14 @@ for argn in sys.argv:
         useMySql = True
     elif argn == 'trace':
         trace = True
+    elif argn == 'tracelocal':
+        traceToLocal = True
 
 dev_id = 0
 # dev_id = hci_devid( "01:23:45:67:89:AB" );
 try:
     sock = bluez.hci_open_dev(dev_id)
     print("ble thread started")
-
 except:
     print("error accessing bluetooth device...")
     sys.exit(1)
@@ -56,3 +58,6 @@ while True:
                 report.in_mysql(cBdaddr, beacon)
             else:
                 print(report.in_http(cBdaddr, beacon).status_code)
+
+        if traceToLocal:
+            report.in_http_local(cBdaddr, beacon)

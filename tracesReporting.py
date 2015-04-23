@@ -3,6 +3,7 @@ import MySQLdb
 
 httpReportUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/report.php"
 httpAttendUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/attend.php"
+httpReportLocalUrl = "http://127.0.0.1/blescan/report.php"
 httpUsePost = True
 
 mysqlHost = "hkgsherlock.no-ip.org"
@@ -24,6 +25,9 @@ def in_http_attend(devBdaddr, bleScanResult):
         print(result.content)
     return result
 
+def in_http_local(devBdaddr, bleScanResult):
+    return __in_http(devBdaddr, bleScanResult, httpReportLocalUrl)
+
 def __in_http(devBdaddr, bleScanResult, url):
     beaconContent = {"selfMac": devBdaddr,
                      "uuid": bleScanResult.uuid,
@@ -41,7 +45,12 @@ def __in_http(devBdaddr, bleScanResult, url):
     else:
         method = 'get'
         params = beaconContent
-    return requests.request(method, url, data=data, params=params)
+    result = None
+    try:
+        result = requests.request(method, url, data=data, params=params, timeout=1.0)
+    except:
+        pass
+    return result
 
 def in_mysql(devBdaddr, bleScanResult):
     db = MySQLdb.connect(host=mysqlHost, port=mysqlPort, user=mysqlUser, passwd=mysqlPass, db=mysqlDb)
