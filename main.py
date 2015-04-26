@@ -52,12 +52,18 @@ while True:
 #        print(str(beacon.txpower) + ", " + str(beacon.rssi));
         print(beacon)
         if attend:
-            print(report.in_http_attend(cBdaddr, beacon).content)
+            result = report.in_http_attend(cBdaddr, beacon)
+            if (result != None):
+                print(result.content)
         if trace:
             if useMySql:
                 report.in_mysql(cBdaddr, beacon)
             else:
-                print(report.in_http(cBdaddr, beacon).status_code)
+                result = report.in_http(cBdaddr, beacon)
+                if (result != None):
+                    print(result.status_code)
 
         if traceToLocal:
-            report.in_http_local(cBdaddr, beacon)
+            result = report.in_http_local(cBdaddr, beacon)
+            if (result != None):
+                print(result.status_code)

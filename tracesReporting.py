@@ -1,8 +1,8 @@
 import requests
 import MySQLdb
 
-httpReportUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/report.php"
-httpAttendUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/attend.php"
+httpReportUrl = "http://itd-moodle.ddns.neto/2014fyp_ips/beacons/report.php"
+httpAttendUrl = "http://itd-moodle.ddns.neto/2014fyp_ips/beacons/attend.php"
 httpReportLocalUrl = "http://127.0.0.1/blescan/report.php"
 httpUsePost = True
 
