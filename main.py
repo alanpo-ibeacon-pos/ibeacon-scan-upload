@@ -49,7 +49,7 @@ while True:
     returnedList = blescan.parse_events(sock, 1)
     print("----------")
     for beacon in returnedList:
-#        print(str(beacon.txpower) + ", " + str(beacon.rssi));
+        # print(str(beacon.txpower) + ", " + str(beacon.rssi));
         print(beacon)
         if attend:
             result = report.in_http_attend(cBdaddr, beacon)

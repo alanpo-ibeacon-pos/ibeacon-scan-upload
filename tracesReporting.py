@@ -1,8 +1,8 @@
 import requests
 import MySQLdb
 
-httpReportUrl = "http://itd-moodle.ddns.neto/2014fyp_ips/beacons/report.php"
-httpAttendUrl = "http://itd-moodle.ddns.neto/2014fyp_ips/beacons/attend.php"
+httpReportUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/report.php"
+httpAttendUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/attend.php"
 httpReportLocalUrl = "http://127.0.0.1/blescan/report.php"
 httpUsePost = True
 
@@ -49,7 +49,7 @@ def __in_http(devBdaddr, bleScanResult, url):
     try:
         result = requests.request(method, url, data=data, params=params, timeout=1.0)
     except:
-        pass
+        print('cannot send result http request')
     return result
 
 def in_mysql(devBdaddr, bleScanResult):
