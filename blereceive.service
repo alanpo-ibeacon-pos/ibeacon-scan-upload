@@ -7,7 +7,7 @@ Type=forking
 User=root
 Group=root
 PIDFile=/var/run/ibeacon-scan-upload.pid
-ExecStart=/root/ble/r-daemon-script.sh
+ExecStart=/usr/bin/python2 /root/ble/c-receive/daemon_load.py start
 TimeoutStartSec=10
 #RemainAfterExit=yes
 
