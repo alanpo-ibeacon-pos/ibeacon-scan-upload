@@ -4,14 +4,14 @@ import sys, time
 from daemon import Daemon
 import main
 
-class MyDaemon(Daemon):
+class BleScannerDaemon(Daemon):
     args = []
 
     def run(self):
         main.main(self.args)
 
 if __name__ == "__main__":
-    daemon = MyDaemon('/var/run/ibeacon-scan-upload.pid')
+    daemon = BleScannerDaemon('/var/run/ibeacon-scan-upload.pid')
     daemon.args = sys.argv[2:]
     print(len(sys.argv))
     if len(sys.argv) == 2:
