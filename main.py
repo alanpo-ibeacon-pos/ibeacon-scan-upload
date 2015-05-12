@@ -8,16 +8,18 @@ import bluetooth._bluetooth as bluez
 import bt_g_util
 import tracesReporting as report
 
-def main():
+strUsage = "args: [--attend] [--trace [--mysql]] [--tracelocal]"
+
+def main(args):
     trace = False
     attend = False
     useMySql = False
     traceToLocal = False
 
-    if len(sys.argv) <= 1:
-        print("args: [--attend] [--trace [--mysql]] [--tracelocal]")
+    if len(args) == 0:
+        print(strUsage)
 
-    for argn in sys.argv:
+    for argn in args:
         if not argn.startswith('--'):
             continue
 
@@ -69,4 +71,4 @@ def main():
                 if (result != None):
                     print(result.status_code)
 
-main()
+main(sys.argv[1:])

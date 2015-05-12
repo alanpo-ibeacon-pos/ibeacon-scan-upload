@@ -1,8 +1,12 @@
 [Unit]
 Description=Run BLE scanner script
+After=rfkill-unblockall.service bluetooth.target
 
 [Service]
 Type=forking
+User=root
+Group=root
+PIDFile=/var/run/ibeacon-scan-upload.pid
 ExecStart=/root/ble/r-daemon-script.sh
 TimeoutStartSec=10
 #RemainAfterExit=yes

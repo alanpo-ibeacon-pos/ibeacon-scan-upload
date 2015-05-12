@@ -5,11 +5,14 @@ from daemon import Daemon
 import main
 
 class MyDaemon(Daemon):
+    args = []
+
     def run(self):
-        main.main()
+        main.main(self.args)
 
 if __name__ == "__main__":
-    daemon = MyDaemon('/tmp/ibeacon-scan-upload.pid')
+    daemon = MyDaemon('/var/run/ibeacon-scan-upload.pid')
+    daemon.args = sys.argv[2:]
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             daemon.start()
@@ -22,5 +25,6 @@ if __name__ == "__main__":
             sys.exit(2)
         sys.exit(0)
     else:
-        print("usage: %s start|stop|restart" % sys.argv[0])
+        print('daemonised version of the beacon tracer')
+        print("usage: %s start|stop|restart" % sys.argv[0] + main.strUsage)
         sys.exit(2)
