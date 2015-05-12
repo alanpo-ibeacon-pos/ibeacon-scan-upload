@@ -14,7 +14,7 @@ useMySql = False
 traceToLocal = False
 
 if len(sys.argv) <= 1:
-    print("args: [--attend] [--trace [--mysql]] [--tracelocal]")
+    print("args: [--trace [--mysql]] [--tracelocal]")
 
 for argn in sys.argv:
     if not argn.startswith('--'):
@@ -22,9 +22,7 @@ for argn in sys.argv:
 
     argn = argn[2:]
 
-    if argn == 'attend':
-        attend = True
-    elif argn == 'mysql':
+    if argn == 'mysql':
         useMySql = True
     elif argn == 'trace':
         trace = True
