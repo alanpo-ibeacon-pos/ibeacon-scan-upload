@@ -8,7 +8,7 @@ import bluetooth._bluetooth as bluez
 import bt_g_util
 import tracesReporting as report
 
-strUsage = "args: [--attend] [--trace [--mysql]] [--tracelocal]"
+strUsage = "[--attend] [--trace [--mysql]] [--tracelocal]"
 
 def main(args):
     trace = False
@@ -17,7 +17,8 @@ def main(args):
     traceToLocal = False
 
     if len(args) == 0:
-        print(strUsage)
+        print('user-mode beacon tracer and reporter')
+        print('usage: %s %s' % (sys.argv[0], strUsage))
 
     for argn in args:
         if not argn.startswith('--'):
