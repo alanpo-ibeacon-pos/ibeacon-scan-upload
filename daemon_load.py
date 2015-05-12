@@ -13,7 +13,6 @@ class BleScannerDaemon(Daemon):
 if __name__ == "__main__":
     daemon = BleScannerDaemon('/var/run/ibeacon-scan-upload.pid')
     daemon.args = sys.argv[2:]
-    print(len(sys.argv))
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             daemon.start()
