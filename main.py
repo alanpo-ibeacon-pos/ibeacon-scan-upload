@@ -8,62 +8,65 @@ import bluetooth._bluetooth as bluez
 import bt_g_util
 import tracesReporting as report
 
-trace = False
-attend = False
-useMySql = False
-traceToLocal = False
+def main():
+    trace = False
+    attend = False
+    useMySql = False
+    traceToLocal = False
 
-if len(sys.argv) <= 1:
-    print("args: [--attend] [--trace [--mysql]] [--tracelocal]")
+    if len(sys.argv) <= 1:
+        print("args: [--attend] [--trace [--mysql]] [--tracelocal]")
 
-for argn in sys.argv:
-    if not argn.startswith('--'):
-        continue
+    for argn in sys.argv:
+        if not argn.startswith('--'):
+            continue
 
-    argn = argn[2:]
+        argn = argn[2:]
 
-    if argn == 'attend':
-        attend = True
-    elif argn == 'mysql':
-        useMySql = True
-    elif argn == 'trace':
-        trace = True
-    elif argn == 'tracelocal':
-        traceToLocal = True
+        if argn == 'attend':
+            attend = True
+        elif argn == 'mysql':
+            useMySql = True
+        elif argn == 'trace':
+            trace = True
+        elif argn == 'tracelocal':
+            traceToLocal = True
 
-dev_id = 0
-# dev_id = hci_devid( "01:23:45:67:89:AB" );
-try:
-    sock = bluez.hci_open_dev(dev_id)
-    print("ble thread started")
-except:
-    print("error accessing bluetooth device...")
-    sys.exit(1)
+    dev_id = 0
+    # dev_id = hci_devid( "01:23:45:67:89:AB" );
+    try:
+        sock = bluez.hci_open_dev(dev_id)
+        print("ble thread started")
+    except:
+        print("error accessing bluetooth device...")
+        sys.exit(1)
 
-cBdaddr = bt_g_util.read_local_bdaddr(sock)
-print(cBdaddr)
-blescan.hci_le_set_scan_parameters(sock)
-blescan.hci_enable_le_scan(sock)
+    cBdaddr = bt_g_util.read_local_bdaddr(sock)
+    print(cBdaddr)
+    blescan.hci_le_set_scan_parameters(sock)
+    blescan.hci_enable_le_scan(sock)
 
-while True:
-    returnedList = blescan.parse_events(sock, 1)
-    print("----------")
-    for beacon in returnedList:
-        # print(str(beacon.txpower) + ", " + str(beacon.rssi));
-        print(beacon)
-        if attend:
-            result = report.in_http_attend(cBdaddr, beacon)
-            if (result != None):
-                print(result.content)
-        if trace:
-            if useMySql:
-                report.in_mysql(cBdaddr, beacon)
-            else:
-                result = report.in_http(cBdaddr, beacon)
+    while True:
+        returnedList = blescan.parse_events(sock, 1)
+        print("----------")
+        for beacon in returnedList:
+            # print(str(beacon.txpower) + ", " + str(beacon.rssi));
+            print(beacon)
+            if attend:
+                result = report.in_http_attend(cBdaddr, beacon)
+                if (result != None):
+                    print(result.content)
+            if trace:
+                if useMySql:
+                    report.in_mysql(cBdaddr, beacon)
+                else:
+                    result = report.in_http(cBdaddr, beacon)
+                    if (result != None):
+                        print(result.status_code)
+
+            if traceToLocal:
+                result = report.in_http_local(cBdaddr, beacon)
                 if (result != None):
                     print(result.status_code)
 
-        if traceToLocal:
-            result = report.in_http_local(cBdaddr, beacon)
-            if (result != None):
-                print(result.status_code)
+main()
