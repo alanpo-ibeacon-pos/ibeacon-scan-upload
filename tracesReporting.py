@@ -3,7 +3,7 @@ import MySQLdb
 
 httpReportUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/report.php"
 httpAttendUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/attend.php"
-httpReportLocalUrl = "http://127.0.0.1/blescan/report.php"
+httpReportLocalUrl = "http://127.0.0.1/beacons/report.php"
 httpUsePost = True
 
 mysqlHost = "hkgsherlock.no-ip.org"
