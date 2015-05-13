@@ -11,7 +11,7 @@ class BleScannerDaemon(Daemon):
         main.main(self.args)
 
 if __name__ == "__main__":
-    daemon = BleScannerDaemon('/var/run/ibeacon-scan-upload.pid', '/dev/null', '/var/log/blescanner.log', '/var/log/blescanner_err.log')
+    daemon = BleScannerDaemon('/var/run/ibeacon-scan-upload.pid', '/dev/null', sys.stdout, sys.stderr)
     daemon.args = sys.argv[2:]
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
