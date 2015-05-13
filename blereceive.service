@@ -3,13 +3,10 @@ Description=Run BLE scanner script
 After=rfkill-unblockall.service bluetooth.target
 
 [Service]
-Type=forking
+#Type=fork
 User=root
 Group=root
-PIDFile=/var/run/ibeacon-scan-upload.pid
-ExecStart=/usr/bin/python2 /root/ble/c-receive/daemon_load.py start
-TimeoutStartSec=10
-#RemainAfterExit=yes
+ExecStart=/usr/bin/python2 /root/ble/c-receive/main.py
 
 [Install]
 WantedBy=multi-user.target
