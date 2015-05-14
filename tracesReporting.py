@@ -51,6 +51,7 @@ def __in_http(devBdaddr, bleScanResult, url):
     result = None
     try:
         result = requests.request(method, url, data=data, params=params, timeout=1.0)
+        print('http request sent, result code is %s' % result.status_code)
     except:
         print('cannot send result http request')
     return result
