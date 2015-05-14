@@ -27,6 +27,7 @@ class entrypoint:
         if len(args) == 0:
             print('user-mode beacon tracer and reporter')
             print('usage: %s %s' % (sys.argv[0], strUsage))
+            sys.exit(0)
 
         for argn in args:
             if not argn.startswith('--'):
@@ -34,18 +35,30 @@ class entrypoint:
 
             argn = argn[2:]
 
-            if argn == 'httpjson':
-                self.httpjson = True
-            elif argn == 'httpjsonlocal':
-                self.httpjsonlocal = True
-            elif argn == 'mysql':
-                self.useMySql = True
-            elif argn == 'trace':
-                self.trace = True
-            elif argn == 'tracelocal':
-                self.traceToLocal = True
-            elif argn == 'sqlite':
-                self.useSqlite = True
+            if argn == 'blackhole':
+                self.httpjson = False
+                self.httpjsonlocal = False
+                self.trace = False
+                self.useMySql = False
+                self.traceToLocal = False
+                self.useSqlite = False
+                break
+            else:
+                if argn == 'httpjson':
+                    self.httpjson = True
+                elif argn == 'httpjsonlocal':
+                    self.httpjsonlocal = True
+                elif argn == 'mysql':
+                    self.useMySql = True
+                elif argn == 'trace':
+                    self.trace = True
+                elif argn == 'tracelocal':
+                    self.traceToLocal = True
+                elif argn == 'sqlite':
+                    self.useSqlite = True
+                else:
+                    print('Not heard of argument \"%s\", exiting' % argn)
+                    sys.exit(1)
 
         dev_id = 0
         # dev_id = hci_devid( "01:23:45:67:89:AB" );
