@@ -59,6 +59,7 @@ def in_http_list_as_json(resultList):
 def in_http_local_list_as_json(resultList):
     # convert to json-serialisable
     dictarr = map(lambda e: e.__dict__, resultList)
+    vars(dictarr)
     response = __in_http({'jsonData': json.dumps(dictarr)}, httpReportLocalJsonUrl)
     print(response.content)
     return response
