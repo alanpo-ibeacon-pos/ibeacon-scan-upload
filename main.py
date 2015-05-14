@@ -55,7 +55,7 @@ def main(args):
 
     while True:
         returnedList = blescan.parse_events(sock, 1)
-        print("----------")
+        # print("----------")
         for beacon in returnedList:
             print('scanned beacon with pairing: u=%s, M=%d, m=%d' % (beacon.uuid, beacon.major, beacon.minor))
             if trace:
