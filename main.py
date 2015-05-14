@@ -59,7 +59,7 @@ class entrypoint:
         blescan.hci_enable_le_scan(sock)
 
         if httpjson:
-            threading.Timer(interval=2, target=self.SendBatchAndClearTray)
+            threading.Timer(interval=2.0, target=self.SendBatchAndClearTray)
 
         while True:
             returnedList = blescan.parse_events(sock, 1)

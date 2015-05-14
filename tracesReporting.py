@@ -20,8 +20,10 @@ sqlite3DbTable = 'traces'
 
 __mysqlPrepared = False
 
+
 def in_http(bleScanResult):
     return __in_http_single(bleScanResult, httpReportUrl)
+
 
 def in_http_attend(bleScanResult):
     result = __in_http_single(bleScanResult, httpAttendUrl)
@@ -29,20 +31,26 @@ def in_http_attend(bleScanResult):
         print(result.content)
     return result
 
+
 def in_http_local(bleScanResult):
     return __in_http_single(bleScanResult, httpReportLocalUrl)
 
+
 def __in_http_single(bleScanResult, url):
     return __in_http({"selfMac": bleScanResult.selfMac,
-                     "uuid": bleScanResult.uuid,
-                     "major": bleScanResult.major,
-                     "minor": bleScanResult.minor,
-                     "mac": bleScanResult.mac,
-                     "txpower": bleScanResult.txpower,
-                     "rssi": bleScanResult.rssi}, url)
+                      "uuid": bleScanResult.uuid,
+                      "major": bleScanResult.major,
+                      "minor": bleScanResult.minor,
+                      "mac": bleScanResult.mac,
+                      "txpower": bleScanResult.txpower,
+                      "rssi": bleScanResult.rssi}, url)
+
 
 def in_http_list_as_json(resultList):
-    return __in_http({'jsonData': json.dumps(resultList)}, httpReportUrl)
+    # convert to json-serialisable
+    dictarr = map(lambda e: e.__dict__, resultList)
+    return __in_http({'jsonData': json.dumps(dictarr)}, httpReportUrl)
+
 
 def __in_http(data, url):
     params = None
@@ -60,18 +68,19 @@ def __in_http(data, url):
 
 
 def in_mysql(bleScanResult):
-    db = MySQLdb.connect(host=mysqlHost, port=mysqlPort, user=mysqlUser, passwd=mysqlPass, db=mysqlDb)
-    cursor = db.cursor()
-    sql = "INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
-           VALUES (%d, 0x%s, %d, %d, %d, %d, %d)" % \
-                                        (int(bleScanResult.selfMac.replace(":", ""), 16),
-                                         bleScanResult.uuid,  # .replace("-", "")
-                                         bleScanResult.major,
-                                         bleScanResult.minor,
-                                         int(bleScanResult.mac.replace(":", ""), 16),
-                                         bleScanResult.txpower,
-                                         bleScanResult.rssi)
+    db = None
     try:
+        db = MySQLdb.connect(host=mysqlHost, port=mysqlPort, user=mysqlUser, passwd=mysqlPass, db=mysqlDb)
+        cursor = db.cursor()
+        sql = "INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
+               VALUES (%d, 0x%s, %d, %d, %d, %d, %d)" % \
+                                            (int(bleScanResult.selfMac.replace(":", ""), 16),
+                                             bleScanResult.uuid,  # .replace("-", "")
+                                             bleScanResult.major,
+                                             bleScanResult.minor,
+                                             int(bleScanResult.mac.replace(":", ""), 16),
+                                             bleScanResult.txpower,
+                                             bleScanResult.rssi)
         cursor.execute(sql)
         db.commit()
     except Exception as e:
@@ -79,7 +88,9 @@ def in_mysql(bleScanResult):
         print(e)
         db.rollback()
     finally:
-        db.close()
+        if db != None:
+            db.close()
+
 
 def in_sqlite(bleScanResult):
     db = None
@@ -88,13 +99,13 @@ def in_sqlite(bleScanResult):
         c = db.cursor()
         c.execute("INSERT INTO " + sqlite3DbTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
                VALUES (%d, x'%s', %d, %d, %d, %d, %d)" % \
-                                            (int(bleScanResult.selfMac.replace(":", ""), 16),
-                                             bleScanResult.uuid,  # .replace("-", "")
-                                             bleScanResult.major,
-                                             bleScanResult.minor,
-                                             int(bleScanResult.mac.replace(":", ""), 16),
-                                             bleScanResult.txpower,
-                                             bleScanResult.rssi))
+                  (int(bleScanResult.selfMac.replace(":", ""), 16),
+                   bleScanResult.uuid,  # .replace("-", "")
+                   bleScanResult.major,
+                   bleScanResult.minor,
+                   int(bleScanResult.mac.replace(":", ""), 16),
+                   bleScanResult.txpower,
+                   bleScanResult.rssi))
         db.commit()
     except Exception as e:
         print(e)

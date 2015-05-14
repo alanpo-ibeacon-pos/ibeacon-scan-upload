@@ -222,6 +222,3 @@ class BleScanResult(object):
 
     def getDist(self):
         return distcalc.calDistance(self.txpower, self.rssi)
-
-    def to_JSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
