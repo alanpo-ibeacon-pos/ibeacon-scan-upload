@@ -63,13 +63,13 @@ def main(args):
                 if useMySql:
                     report.in_mysql(cBdaddr, beacon)
                 else:
-                    threading.Thread(report.in_http, args=[cBdaddr, beacon]).start()
+                    threading.Thread(target=report.in_http, args=[cBdaddr, beacon]).start()
 
             if traceToLocal:
                 if useSqlite:
                     report.in_sqlite(cBdaddr, beacon)
                 else:
-                    threading.Thread(report.in_http_local, args=[cBdaddr, beacon]).start()
+                    threading.Thread(target=report.in_http_local, args=[cBdaddr, beacon]).start()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
