@@ -8,7 +8,7 @@ import bluetooth._bluetooth as bluez
 import bt_g_util
 import tracesReporting as report
 
-strUsage = "[--attend] [--trace [--mysql]] [--tracelocal]"
+strUsage = "[--attend] [--trace [--mysql]] [--tracelocal [--sqlite]]"
 
 def main(args):
     trace = False

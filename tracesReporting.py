@@ -1,5 +1,6 @@
 import requests
 import MySQLdb
+import sqlite3
 
 httpReportUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/report.php"
 httpAttendUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/attend.php"
@@ -12,6 +13,8 @@ mysqlUser = "ibeacon"
 mysqlPass = "1Beac0n"
 mysqlDb = "ibeacon_traces"
 mysqlTable = "traces"
+
+sqlite3DbPath = '/usr/share/nginx/sqlite_db/ibeacons.sqlite3'
 
 
 __mysqlPrepared = False
@@ -73,3 +76,25 @@ def in_mysql(devBdaddr, bleScanResult):
         db.rollback()
     finally:
         db.close()
+
+def in_sqlite(devBdaddr, bleScanResult):
+    db = None
+    try:
+        db = sqlite3.connect(sqlite3DbPath)
+        c = db.cursor()
+        c.execute("INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
+               VALUES (%d, 0x%s, %d, %d, %d, %d, %d)" % \
+                                            (int(devBdaddr.replace(":", ""), 16),
+                                             bleScanResult.uuid,  # .replace("-", "")
+                                             bleScanResult.major,
+                                             bleScanResult.minor,
+                                             int(bleScanResult.mac.replace(":", ""), 16),
+                                             bleScanResult.txpower,
+                                             bleScanResult.rssi))
+        db.commit()
+    except Exception as e:
+        print(e)
+        db.rollback()
+    finally:
+        if db != None:
+            db.close()
