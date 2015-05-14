@@ -49,6 +49,7 @@ class entrypoint:
                 elif argn == 'httpjsonlocal':
                     self.httpjsonlocal = True
                 elif argn == 'mysql':
+
                     self.useMySql = True
                 elif argn == 'trace':
                     self.trace = True
@@ -109,6 +110,8 @@ class entrypoint:
         sending = self.toBeSent
         self.toBeSent = []
         self.lock.release()
+        if len(sending) == 0:
+            return
         if self.httpjson:
             report.in_http_list_as_json(sending)
         if self.httpjsonlocal:

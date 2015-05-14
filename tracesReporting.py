@@ -76,7 +76,7 @@ def __in_http(data, url):
     result = None
     try:
         result = requests.request(method, url, data=data, params=params, timeout=1.0)
-        print('http request sent, result code is %s' % result.status_code)
+        print('http request sent to url "' + url + '", result code is %d' % result.status_code)
     except KeyboardInterrupt:
         return None
     except:
