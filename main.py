@@ -73,7 +73,7 @@ class entrypoint:
                 self.lock.release()
             else:
                 for beacon in returnedList:
-                    print('scanned beacon with pairing: u=%s, M=%d, m=%d' % (beacon.uuid, beacon.major, beacon.minor))
+                    print('scanned beacon with pairing: u=%s, M=%d, m=%d. sig: [%d/%d]' % (beacon.uuid, beacon.major, beacon.minor, beacon.rssi, beacon.txpower))
                     if trace:
                         if useMySql:
                             threading.Thread(target=report.in_mysql, args=[beacon]).start()
