@@ -8,6 +8,9 @@ httpAttendUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/attend.php"
 httpReportLocalUrl = "http://127.0.0.1/beacons/report.php"
 httpUsePost = True
 
+httpReportJsonUrl = "http://itd-moodle.ddns.net/2014fyp_ips/beacons/report_json.php"
+httpReportLocalJsonUrl = "http://127.0.0.1/beacons/report_json.php"
+
 mysqlHost = "hkgsherlock.no-ip.org"
 mysqlPort = 3306
 mysqlUser = "ibeacon"
@@ -47,6 +50,12 @@ def __in_http_single(bleScanResult, url):
 
 
 def in_http_list_as_json(resultList):
+    # convert to json-serialisable
+    dictarr = map(lambda e: e.__dict__, resultList)
+    return __in_http({'jsonData': json.dumps(dictarr)}, httpReportUrl)
+
+
+def in_http_local_list_as_json(resultList):
     # convert to json-serialisable
     dictarr = map(lambda e: e.__dict__, resultList)
     return __in_http({'jsonData': json.dumps(dictarr)}, httpReportUrl)

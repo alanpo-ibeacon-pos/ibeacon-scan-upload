@@ -9,19 +9,20 @@ import bluetooth._bluetooth as bluez
 import bt_g_util
 import tracesReporting as report
 
-strUsage = "[--httpjson] | [--trace [--mysql]] [--tracelocal [--sqlite]]"
+strUsage = "[--httpjson] [--httpjsonlocal] | [--trace [--mysql]] [--tracelocal [--sqlite]]"
 
 class entrypoint:
     def __init__(self):
         self.toBeSent = []
         self.lock = threading.Lock()
+        self.httpjson = False
+        self.httpjsonlocal = False
+        self.trace = False
+        self.useMySql = False
+        self.traceToLocal = False
+        self.useSqlite = False
 
     def main(self, args):
-        httpjson = False
-        trace = False
-        useMySql = False
-        traceToLocal = False
-        useSqlite = False
 
         if len(args) == 0:
             print('user-mode beacon tracer and reporter')
@@ -34,15 +35,17 @@ class entrypoint:
             argn = argn[2:]
 
             if argn == 'httpjson':
-                httpjson = True
+                self.httpjson = True
+            elif argn == 'httpjsonlocal':
+                self.httpjsonlocal = True
             elif argn == 'mysql':
-                useMySql = True
+                self.useMySql = True
             elif argn == 'trace':
-                trace = True
+                self.trace = True
             elif argn == 'tracelocal':
-                traceToLocal = True
+                self.traceToLocal = True
             elif argn == 'sqlite':
-                useSqlite = True
+                self.useSqlite = True
 
         dev_id = 0
         # dev_id = hci_devid( "01:23:45:67:89:AB" );
@@ -58,7 +61,7 @@ class entrypoint:
         blescan.hci_le_set_scan_parameters(sock)
         blescan.hci_enable_le_scan(sock)
 
-        if httpjson:
+        if self.httpjson or self.httpjsonlocal:
             threading.Timer(interval=2.0, target=self.SendBatchAndClearTray).start()
 
         while True:
@@ -67,21 +70,21 @@ class entrypoint:
             for e in returnedList:
                 e.selfMac = cBdaddr
 
-            if httpjson:
+            if self.httpjson or self.httpjsonlocal:
                 self.lock.acquire()
                 self.toBeSent += returnedList
                 self.lock.release()
             else:
                 for beacon in returnedList:
                     print('scanned beacon with pairing: u=%s, M=%d, m=%d. sig: [%d/%d]' % (beacon.uuid, beacon.major, beacon.minor, beacon.rssi, beacon.txpower))
-                    if trace:
-                        if useMySql:
+                    if self.trace:
+                        if self.useMySql:
                             threading.Thread(target=report.in_mysql, args=[beacon]).start()
                         else:
                             threading.Thread(target=report.in_http, args=[beacon]).start()
 
-                    if traceToLocal:
-                        if useSqlite:
+                    if self.traceToLocal:
+                        if self.useSqlite:
                             threading.Thread(target=report.in_sqlite, args=[beacon]).start()
                         else:
                             threading.Thread(target=report.in_http_local, args=[beacon]).start()
@@ -92,8 +95,10 @@ class entrypoint:
         sending = self.toBeSent
         self.toBeSent = []
         self.lock.release()
-        report.in_http_list_as_json(sending)
-
+        if self.httpjson:
+            report.in_http_list_as_json(sending)
+        if self.httpjsonlocal:
+            report.in_http_local_list_as_json(sending)
 
 
 if __name__ == "__main__":
