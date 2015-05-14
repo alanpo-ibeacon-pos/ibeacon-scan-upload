@@ -1,5 +1,6 @@
 # BLE iBeaconScanner based on https://github.com/adamf/BLE/blob/master/ble-scanner.py
 # JCS 06/07/14
+import json
 
 DEBUG = False
 # BLE scanner based on https://github.com/adamf/BLE/blob/master/ble-scanner.py
@@ -221,3 +222,6 @@ class BleScanResult(object):
 
     def getDist(self):
         return distcalc.calDistance(self.txpower, self.rssi)
+
+    def to_JSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
