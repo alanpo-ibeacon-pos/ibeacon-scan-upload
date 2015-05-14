@@ -62,7 +62,7 @@ def in_http_local_list_as_json(resultList):
     # convert to json-serialisable
     dictarr = map(lambda e: e.__dict__, resultList)
     response = __in_http({'jsonData': json.dumps(dictarr)}, httpReportLocalJsonUrl)
-    if response.status_code != 200:
+    if response is None & response.status_code != 200:
         print(response.content)
     return response
 
