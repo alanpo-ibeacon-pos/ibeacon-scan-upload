@@ -57,17 +57,16 @@ def main(args):
         returnedList = blescan.parse_events(sock, 1)
         print("----------")
         for beacon in returnedList:
-            # print(str(beacon.txpower) + ", " + str(beacon.rssi));
-            print(beacon)
+            print('scanned beacon with pairing: u=%s, M=%d, m=%d' % (beacon.uuid, beacon.major, beacon.minor))
             if trace:
                 if useMySql:
-                    report.in_mysql(cBdaddr, beacon)
+                    threading.Thread(target=report.in_mysql, args=[cBdaddr, beacon])
                 else:
                     threading.Thread(target=report.in_http, args=[cBdaddr, beacon]).start()
 
             if traceToLocal:
                 if useSqlite:
-                    report.in_sqlite(cBdaddr, beacon)
+                    threading.Thread(target=report.in_sqlite, args=[cBdaddr, beacon])
                 else:
                     threading.Thread(target=report.in_http_local, args=[cBdaddr, beacon]).start()
 
