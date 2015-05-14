@@ -83,7 +83,7 @@ def in_sqlite(devBdaddr, bleScanResult):
         db = sqlite3.connect(sqlite3DbPath)
         c = db.cursor()
         c.execute("INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
-               VALUES (%d, 0x%s, %d, %d, %d, %d, %d)" % \
+               VALUES (%d, x'%s', %d, %d, %d, %d, %d)" % \
                                             (int(devBdaddr.replace(":", ""), 16),
                                              bleScanResult.uuid,  # .replace("-", "")
                                              bleScanResult.major,
