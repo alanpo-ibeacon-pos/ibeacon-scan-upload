@@ -21,7 +21,6 @@ import struct
 import bluetooth._bluetooth as bluez
 import distcalc
 
-
 LE_META_EVENT = 0x3e
 LE_PUBLIC_ADDRESS = 0x00
 LE_RANDOM_ADDRESS = 0x01
@@ -194,12 +193,13 @@ def parse_events(sock, loop_count=100):
                     c_minor = returnnumberpacket(pkt[report_pkt_offset - 4: report_pkt_offset - 2])
                     c_u_tx = struct.unpack("b", pkt[report_pkt_offset - 2])[0]
                     c_rssi = struct.unpack("b", pkt[report_pkt_offset - 1])[0]
-                    myFullList.append(BleScanResult(c_uuid, c_major, c_minor, c_mac, c_u_tx, c_rssi))
+                    myFullList.append(BleScanResult('', c_uuid, c_major, c_minor, c_mac, c_u_tx, c_rssi))
                 done = True
     sock.setsockopt(bluez.SOL_HCI, bluez.HCI_FILTER, old_filter)
     return myFullList
 
 class BleScanResult(object):
+    selfMac = ""
     uuid = ""
     major = 0
     minor = 0
@@ -207,7 +207,8 @@ class BleScanResult(object):
     txpower = 0
     rssi = 0
 
-    def __init__(self, uuid, major, minor, mac, u_txpower, rssi):
+    def __init__(self, selfMac, uuid, major, minor, mac, u_txpower, rssi):
+        self.selfMac = selfMac
         self.uuid = uuid
         self.major = major
         self.minor = minor
@@ -216,7 +217,7 @@ class BleScanResult(object):
         self.rssi = rssi
 
     def __str__(self):
-        return self.mac + ", " + self.uuid + ", " + str(self.major) + ", " + str(self.minor) + ", " + str(self.txpower) + ", " + str(self.rssi)
+        return self.selfMac + ": " + self.mac + ", " + self.uuid + ", " + str(self.major) + ", " + str(self.minor) + ", " + str(self.txpower) + ", " + str(self.rssi)
 
     def getDist(self):
         return distcalc.calDistance(self.txpower, self.rssi)

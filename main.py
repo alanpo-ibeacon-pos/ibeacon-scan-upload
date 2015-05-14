@@ -9,66 +9,91 @@ import bluetooth._bluetooth as bluez
 import bt_g_util
 import tracesReporting as report
 
-strUsage = "[--attend] [--trace [--mysql]] [--tracelocal [--sqlite]]"
+strUsage = "[--httpjson] | [--trace [--mysql]] [--tracelocal [--sqlite]]"
 
-def main(args):
-    trace = False
-    attend = False
-    useMySql = False
-    traceToLocal = False
-    useSqlite = False
+class entrypoint:
+    def __init__(self):
+        self.toBeSent = []
+        self.lock = threading.Lock()
 
-    if len(args) == 0:
-        print('user-mode beacon tracer and reporter')
-        print('usage: %s %s' % (sys.argv[0], strUsage))
+    def main(self, args):
+        httpjson = False
+        trace = False
+        useMySql = False
+        traceToLocal = False
+        useSqlite = False
 
-    for argn in args:
-        if not argn.startswith('--'):
-            continue
+        if len(args) == 0:
+            print('user-mode beacon tracer and reporter')
+            print('usage: %s %s' % (sys.argv[0], strUsage))
 
-        argn = argn[2:]
+        for argn in args:
+            if not argn.startswith('--'):
+                continue
 
-        if argn == 'attend':
-            attend = True
-        elif argn == 'mysql':
-            useMySql = True
-        elif argn == 'trace':
-            trace = True
-        elif argn == 'tracelocal':
-            traceToLocal = True
-        elif argn == 'sqlite':
-            useSqlite = True
+            argn = argn[2:]
 
-    dev_id = 0
-    # dev_id = hci_devid( "01:23:45:67:89:AB" );
-    try:
-        sock = bluez.hci_open_dev(dev_id)
-        print("ble thread started")
-    except:
-        print("error accessing bluetooth device...")
-        sys.exit(1)
+            if argn == 'httpjson':
+                httpjson = True
+            elif argn == 'mysql':
+                useMySql = True
+            elif argn == 'trace':
+                trace = True
+            elif argn == 'tracelocal':
+                traceToLocal = True
+            elif argn == 'sqlite':
+                useSqlite = True
 
-    cBdaddr = bt_g_util.read_local_bdaddr(sock)
-    print(cBdaddr)
-    blescan.hci_le_set_scan_parameters(sock)
-    blescan.hci_enable_le_scan(sock)
+        dev_id = 0
+        # dev_id = hci_devid( "01:23:45:67:89:AB" );
+        try:
+            sock = bluez.hci_open_dev(dev_id)
+            print("ble thread started")
+        except:
+            print("error accessing bluetooth device...")
+            sys.exit(1)
 
-    while True:
-        returnedList = blescan.parse_events(sock, 1)
-        # print("----------")
-        for beacon in returnedList:
-            print('scanned beacon with pairing: u=%s, M=%d, m=%d' % (beacon.uuid, beacon.major, beacon.minor))
-            if trace:
-                if useMySql:
-                    threading.Thread(target=report.in_mysql, args=[cBdaddr, beacon])
-                else:
-                    threading.Thread(target=report.in_http, args=[cBdaddr, beacon]).start()
+        cBdaddr = bt_g_util.read_local_bdaddr(sock)
+        print(cBdaddr)
+        blescan.hci_le_set_scan_parameters(sock)
+        blescan.hci_enable_le_scan(sock)
 
-            if traceToLocal:
-                if useSqlite:
-                    threading.Thread(target=report.in_sqlite, args=[cBdaddr, beacon])
-                else:
-                    threading.Thread(target=report.in_http_local, args=[cBdaddr, beacon]).start()
+        if httpjson:
+            threading.Timer(interval=2, target=self.SendBatchAndClearTray)
+
+        while True:
+            returnedList = blescan.parse_events(sock, 1)
+
+            for e in returnedList:
+                e.selfMac = cBdaddr
+
+            if httpjson:
+                self.lock.acquire()
+                self.toBeSent += returnedList
+                self.lock.release()
+            else:
+                for beacon in returnedList:
+                    print('scanned beacon with pairing: u=%s, M=%d, m=%d' % (beacon.uuid, beacon.major, beacon.minor))
+                    if trace:
+                        if useMySql:
+                            threading.Thread(target=report.in_mysql, args=[beacon]).start()
+                        else:
+                            threading.Thread(target=report.in_http, args=[beacon]).start()
+
+                    if traceToLocal:
+                        if useSqlite:
+                            threading.Thread(target=report.in_sqlite, args=[beacon]).start()
+                        else:
+                            threading.Thread(target=report.in_http_local, args=[beacon]).start()
+
+    def SendBatchAndClearTray(self):
+        self.lock.acquire()
+        sending = self.toBeSent
+        self.toBeSent = []
+        self.lock.release()
+        report.in_http_list_as_json(sending)
+
+
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    entrypoint().main(sys.argv[1:])

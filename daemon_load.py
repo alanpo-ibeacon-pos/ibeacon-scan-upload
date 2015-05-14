@@ -8,7 +8,7 @@ class BleScannerDaemon(Daemon):
     args = []
 
     def run(self):
-        main.main(self.args)
+        main.entrypoint().main(self.args)
 
 if __name__ == "__main__":
     daemon = BleScannerDaemon('/var/run/ibeacon-scan-upload.pid', '/dev/null', sys.stdout.name, sys.stderr.name)
