@@ -2,6 +2,7 @@
 # jcs 6/8/2014
 
 import sys
+import threading
 
 import blescan
 import bluetooth._bluetooth as bluez
@@ -58,25 +59,17 @@ def main(args):
         for beacon in returnedList:
             # print(str(beacon.txpower) + ", " + str(beacon.rssi));
             print(beacon)
-            if attend:
-                result = report.in_http_attend(cBdaddr, beacon)
-                if (result != None):
-                    print(result.content)
             if trace:
                 if useMySql:
                     report.in_mysql(cBdaddr, beacon)
                 else:
-                    result = report.in_http(cBdaddr, beacon)
-                    if (result != None):
-                        print(result.status_code)
+                    threading.Thread(report.in_http, [cBdaddr, beacon]).start()
 
             if traceToLocal:
                 if useSqlite:
                     report.in_sqlite(cBdaddr, beacon)
                 else:
-                    result = report.in_http_local(cBdaddr, beacon)
-                    if (result != None):
-                        print(result.status_code)
+                    threading.Thread(report.in_http_local, [cBdaddr, beacon]).start()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
