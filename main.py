@@ -59,7 +59,7 @@ class entrypoint:
         blescan.hci_enable_le_scan(sock)
 
         if httpjson:
-            threading.Timer(interval=2.0, target=self.SendBatchAndClearTray)
+            threading.Timer(interval=2.0, target=self.SendBatchAndClearTray).start()
 
         while True:
             returnedList = blescan.parse_events(sock, 1)
@@ -87,6 +87,7 @@ class entrypoint:
                             threading.Thread(target=report.in_http_local, args=[beacon]).start()
 
     def SendBatchAndClearTray(self):
+        threading.Timer(interval=2.0, target=self.SendBatchAndClearTray).start()
         self.lock.acquire()
         sending = self.toBeSent
         self.toBeSent = []
