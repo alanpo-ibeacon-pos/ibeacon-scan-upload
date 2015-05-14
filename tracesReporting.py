@@ -77,8 +77,8 @@ def __in_http(data, url):
     try:
         result = requests.request(method, url, data=data, params=params, timeout=1.0)
         print('http request sent to url "' + url + '", result code is %d' % result.status_code)
-    except:
-        print('cannot send result http request')
+    except Exception as e:
+        print('cannot send result http request, reason: %s' % e.message)
     return result
 
 
