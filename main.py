@@ -15,6 +15,7 @@ def main(args):
     attend = False
     useMySql = False
     traceToLocal = False
+    useSqlite = False
 
     if len(args) == 0:
         print('user-mode beacon tracer and reporter')
@@ -34,6 +35,8 @@ def main(args):
             trace = True
         elif argn == 'tracelocal':
             traceToLocal = True
+        elif argn == 'sqlite':
+            useSqlite = True
 
     dev_id = 0
     # dev_id = hci_devid( "01:23:45:67:89:AB" );
@@ -68,9 +71,12 @@ def main(args):
                         print(result.status_code)
 
             if traceToLocal:
-                result = report.in_http_local(cBdaddr, beacon)
-                if (result != None):
-                    print(result.status_code)
+                if useSqlite:
+                    report.in_sqlite(cBdaddr, beacon)
+                else:
+                    result = report.in_http_local(cBdaddr, beacon)
+                    if (result != None):
+                        print(result.status_code)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
