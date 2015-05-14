@@ -88,6 +88,7 @@ class entrypoint:
                 print('interrupted from keyboard')
                 if self.currentTimer is not None:
                     self.currentTimer.cancel()
+                sys.exit(0)
 
             for e in returnedList:
                 print('scanned beacon with pairing: u=%s, M=%d, m=%d. sig: [%d/%d]'
