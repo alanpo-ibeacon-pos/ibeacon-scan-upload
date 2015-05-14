@@ -15,12 +15,15 @@ class entrypoint:
     def __init__(self):
         self.toBeSent = []
         self.lock = threading.Lock()
+
         self.httpjson = False
         self.httpjsonlocal = False
         self.trace = False
         self.useMySql = False
         self.traceToLocal = False
         self.useSqlite = False
+
+        self.currentTimer = None
 
     def main(self, args):
 
@@ -76,10 +79,15 @@ class entrypoint:
         blescan.hci_enable_le_scan(sock)
 
         if self.httpjson or self.httpjsonlocal:
-            threading.Timer(2.0, self.SendBatchAndClearTray).start()
+            self.RestartTimeer()
 
         while True:
-            returnedList = blescan.parse_events(sock, 1)
+            try:
+                returnedList = blescan.parse_events(sock, 1)
+            except KeyboardInterrupt:
+                print('interrupted from keyboard')
+                if self.currentTimer is not None:
+                    self.currentTimer.cancel()
 
             for e in returnedList:
                 print('scanned beacon with pairing: u=%s, M=%d, m=%d. sig: [%d/%d]'
@@ -104,8 +112,12 @@ class entrypoint:
                         else:
                             threading.Thread(target=report.in_http_local, args=[beacon]).start()
 
+    def RestartTimeer(self):
+        self.currentTimer = threading.Timer(2.0, self.SendBatchAndClearTray)
+        self.currentTimer.start()
+
     def SendBatchAndClearTray(self):
-        threading.Timer(2.0, self.SendBatchAndClearTray).start()
+        self.RestartTimeer()
         self.lock.acquire()
         sending = self.toBeSent
         self.toBeSent = []
