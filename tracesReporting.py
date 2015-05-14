@@ -15,7 +15,7 @@ mysqlDb = "ibeacon_traces"
 mysqlTable = "traces"
 
 sqlite3DbPath = '/usr/share/nginx/sqlite_db/ibeacons.sqlite3'
-
+sqlite3DbTable = 'traces'
 
 __mysqlPrepared = False
 
@@ -82,7 +82,7 @@ def in_sqlite(devBdaddr, bleScanResult):
     try:
         db = sqlite3.connect(sqlite3DbPath)
         c = db.cursor()
-        c.execute("INSERT INTO " + mysqlTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
+        c.execute("INSERT INTO " + sqlite3DbTable + "(selfMac, uuid, major, minor, mac, txpower, rssi) \
                VALUES (%d, x'%s', %d, %d, %d, %d, %d)" % \
                                             (int(devBdaddr.replace(":", ""), 16),
                                              bleScanResult.uuid,  # .replace("-", "")
