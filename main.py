@@ -57,7 +57,7 @@ class entrypoint:
             sys.exit(1)
 
         cBdaddr = bt_g_util.read_local_bdaddr(sock)
-        print(cBdaddr)
+        print('using bluetooth device with mac address of:  %s' % cBdaddr)
         blescan.hci_le_set_scan_parameters(sock)
         blescan.hci_enable_le_scan(sock)
 
