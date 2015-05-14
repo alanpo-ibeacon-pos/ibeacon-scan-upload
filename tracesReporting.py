@@ -52,13 +52,16 @@ def __in_http_single(bleScanResult, url):
 def in_http_list_as_json(resultList):
     # convert to json-serialisable
     dictarr = map(lambda e: e.__dict__, resultList)
-    return __in_http({'jsonData': json.dumps(dictarr)}, httpReportJsonUrl)
+    response = __in_http({'jsonData': json.dumps(dictarr)}, httpReportJsonUrl)
+    return response
 
 
 def in_http_local_list_as_json(resultList):
     # convert to json-serialisable
     dictarr = map(lambda e: e.__dict__, resultList)
-    return __in_http({'jsonData': json.dumps(dictarr)}, httpReportLocalJsonUrl)
+    response = __in_http({'jsonData': json.dumps(dictarr)}, httpReportLocalJsonUrl)
+    print(response.content)
+    return response
 
 
 def __in_http(data, url):
