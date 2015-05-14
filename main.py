@@ -81,6 +81,8 @@ class entrypoint:
             returnedList = blescan.parse_events(sock, 1)
 
             for e in returnedList:
+                print('scanned beacon with pairing: u=%s, M=%d, m=%d. sig: [%d/%d]'
+                      % (e.uuid, e.major, e.minor, e.rssi, e.txpower))
                 e.selfMac = cBdaddr
 
             if self.httpjson or self.httpjsonlocal:
@@ -89,7 +91,6 @@ class entrypoint:
                 self.lock.release()
             else:
                 for beacon in returnedList:
-                    print('scanned beacon with pairing: u=%s, M=%d, m=%d. sig: [%d/%d]' % (beacon.uuid, beacon.major, beacon.minor, beacon.rssi, beacon.txpower))
                     if self.trace:
                         if self.useMySql:
                             threading.Thread(target=report.in_mysql, args=[beacon]).start()
