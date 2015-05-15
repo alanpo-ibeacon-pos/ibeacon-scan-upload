@@ -1,6 +1,7 @@
 # BLE iBeaconScanner based on https://github.com/adamf/BLE/blob/master/ble-scanner.py
 # JCS 06/07/14
 import json
+import datetime
 
 DEBUG = False
 # BLE scanner based on https://github.com/adamf/BLE/blob/master/ble-scanner.py
@@ -194,31 +195,33 @@ def parse_events(sock, loop_count=100):
                     c_minor = returnnumberpacket(pkt[report_pkt_offset - 4: report_pkt_offset - 2])
                     c_u_tx = struct.unpack("b", pkt[report_pkt_offset - 2])[0]
                     c_rssi = struct.unpack("b", pkt[report_pkt_offset - 1])[0]
-                    myFullList.append(BleScanResult('', c_uuid, c_major, c_minor, c_mac, c_u_tx, c_rssi))
+                    c_datetimeStr = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                    myFullList.append(BleScanResult('',
+                                                    c_uuid,
+                                                    c_major,
+                                                    c_minor,
+                                                    c_mac,
+                                                    c_u_tx,
+                                                    c_rssi,
+                                                    c_datetimeStr))
                 done = True
     sock.setsockopt(bluez.SOL_HCI, bluez.HCI_FILTER, old_filter)
     return myFullList
 
 class BleScanResult(object):
-    selfMac = ""
-    uuid = ""
-    major = 0
-    minor = 0
-    mac = ""
-    txpower = 0
-    rssi = 0
 
-    def __init__(self, selfMac, uuid, major, minor, mac, u_txpower, rssi):
+    def __init__(self, selfMac, uuid, major, minor, mac, txpower, rssi, datetime):
         self.selfMac = selfMac
         self.uuid = uuid
         self.major = major
         self.minor = minor
         self.mac = mac
-        self.txpower = u_txpower
+        self.txpower = txpower
         self.rssi = rssi
+        self.datetime = datetime
 
     def __str__(self):
-        return self.selfMac + ": " + self.mac + ", " + self.uuid + ", " + str(self.major) + ", " + str(self.minor) + ", " + str(self.txpower) + ", " + str(self.rssi)
+        return self.selfMac + "@" + self.datetime + ": " + self.mac + ", " + self.uuid + ", " + str(self.major) + ", " + str(self.minor) + ", " + str(self.txpower) + ", " + str(self.rssi)
 
     def getDist(self):
         return distcalc.calDistance(self.txpower, self.rssi)
